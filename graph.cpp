@@ -18,9 +18,10 @@ Vertex::Vertex(const std::string& csv) {
 
   name = parsed[1];
   city = parsed[2] + ", " + parsed[3];
-  coords.first = std::stod(parsed[6]);
-  coords.second = std::stod(parsed[7]);
-  std::cout << key << ", " << city << ", " << coords.first << ", " << coords.second << std::endl;
+  // TODO: add exception handling. currently throws exception somewhere when used on full dataset. should discard entries with invalid coordinates
+  //coords.first = std::stod(parsed[6]);
+  //coords.second = std::stod(parsed[7]);
+  //std::cout << key << ", " << city << ", " << coords.first << ", " << coords.second << std::endl;
 }
 
 std::string Vertex::GetKey() const {
@@ -52,7 +53,7 @@ Edge::Edge(const std::string& csv) {
   source = parsed[2];
   dest = parsed[4];
   key = source + '-' + dest;
-  std::cout << source << ", " << dest << ", " << key << std::endl;
+  //std::cout << source << ", " << dest << ", " << key << std::endl;
   weight = 0;
 }
 
@@ -94,4 +95,5 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
     adj_list[e.GetSource()].push_back(e.GetDest());
     // TODO: set edge weight to distance
   }
+  std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
 }
