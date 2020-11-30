@@ -40,6 +40,8 @@ class Graph {
     unsigned GetNumEdges() const;
     // Gets all vertices where an edge exists from the source to the vertex
     std::vector<std::string> GetDestinations(const std::string& source);
+    bool VertexExists(const std::string& key);
+    bool EdgeExists(const std::string& source, const std::string& dest);
   private:
     std::unordered_map<std::string, Vertex> vertices;
     std::unordered_map<std::string, Edge> edges;

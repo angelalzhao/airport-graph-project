@@ -126,3 +126,12 @@ std::vector<std::string> Graph::GetDestinations(const std::string& source) {
   if (!adj_list.count(source)) return {};
   return adj_list.at(source);
 }
+
+bool Graph::VertexExists(const std::string& key) {
+  return vertices.count(key) > 0;
+}
+
+bool Graph::EdgeExists(const std::string& source, const std::string& dest) {
+  std::string key = source + '-' + dest;
+  return edges.count(key) > 0;
+}
