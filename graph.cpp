@@ -2,6 +2,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 Vertex::Vertex() {}
 // TODO: overload << operator for pretty printing ???
 Vertex::Vertex(const std::string& csv) {
@@ -13,15 +14,22 @@ Vertex::Vertex(const std::string& csv) {
     std::getline(ss, substring, ',');
     parsed.push_back(substring);
   }
-  // TODO: remove quotes around key, name, city (if key is not null)
+  // stod exception caused by extra commas (usually in airport name), disregard these airports for now
+  coords.first = std::stod(parsed[6]);
+  coords.second = std::stod(parsed[7]);
   key = parsed[4];
-
+  if (key.length() != 5) {
+    throw std::invalid_argument("Invalid key");
+  }
+  key = key.substr(1, 3);
   name = parsed[1];
-  city = parsed[2] + ", " + parsed[3];
-  // TODO: add exception handling. currently throws exception somewhere when used on full dataset. should discard entries with invalid coordinates
-  //coords.first = std::stod(parsed[6]);
-  //coords.second = std::stod(parsed[7]);
-  //std::cout << key << ", " << city << ", " << coords.first << ", " << coords.second << std::endl;
+  // likely not an issue
+  if (name.length() < 3 || parsed[2].length() < 3 || parsed[3].length() < 3) {
+    throw std::invalid_argument("Invalid city or name");
+  }
+  name = name.substr(1, name.length() - 2);
+  city = parsed[2].substr(1, parsed[2].length() - 2) + ", " + parsed[3].substr(1, parsed[3].length() - 2);
+  // std::cout << key << ", " << name << ", " << city << ", " << coords.first << ", " << coords.second << std::endl;
 }
 
 std::string Vertex::GetKey() const {
@@ -81,19 +89,40 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
   std::ifstream vfilestream(vertex_file);
   std::string line;
   while (std::getline(vfilestream, line)) {
-    // TODO: check for null keys. if key is null, disregard and do not add to vertices map
-    Vertex v(line);
-    vertices[v.GetKey()] = v;
+    // if something went wrong with vertex creation, don't include in vertices map
+    try {
+      Vertex v(line);
+      vertices[v.GetKey()] = v;
+    } catch (const std::invalid_argument& ia) {
+      // Do nothing
+    }
+    
   }
   line.clear();
   std::ifstream efilestream(edge_file);
   while (std::getline(efilestream, line)) {
     // maybe TODO? check for null/abnormal edge keys, doesn't seem to be an issue from looking at dataset
-    // TODO: check for repeat edges (same source/destination), skip repeat edges (avoid repeats in adjacency list)
     Edge e(line);
+    // checking if either endpoints aren't in list of vertices, or that an edge with the same source/destination already exists
+    if (!vertices.count(e.GetSource()) || !vertices.count(e.GetDest()) || edges.count(e.GetKey())) {
+      continue;
+    }
     edges[e.GetKey()] = e;
     adj_list[e.GetSource()].push_back(e.GetDest());
     // TODO: set edge weight to distance
   }
   std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
+}
+
+unsigned Graph::GetNumVertices() const {
+  return vertices.size();
+}
+
+unsigned Graph::GetNumEdges() const {
+  return edges.size();
+}
+
+std::vector<std::string> Graph::GetDestinations(const std::string& source) {
+  if (!adj_list.count(source)) return {};
+  return adj_list.at(source);
 }

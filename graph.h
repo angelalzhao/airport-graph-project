@@ -36,6 +36,10 @@ class Edge {
 class Graph {
   public:
     Graph(const std::string& vertex_file, const std::string& edge_file);
+    unsigned GetNumVertices() const;
+    unsigned GetNumEdges() const;
+    // Gets all vertices where an edge exists from the source to the vertex
+    std::vector<std::string> GetDestinations(const std::string& source);
   private:
     std::unordered_map<std::string, Vertex> vertices;
     std::unordered_map<std::string, Edge> edges;

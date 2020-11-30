@@ -36,7 +36,7 @@ graph.o: main.cpp graph.cpp
 	$(CXX) $(CXXFLAGS) main.cpp graph.cpp
 
 test: output_msg catch/catchmain.cpp tests/tests.cpp
-	$(LD) catch/catchmain.cpp tests/tests.cpp $(LDFLAGS) -o test
+	$(LD) catch/catchmain.cpp tests/tests.cpp graph.cpp $(LDFLAGS) -o test
 
 clean:
 	-rm -f *.o $(EXENAME) test
