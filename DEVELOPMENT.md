@@ -1,3 +1,7 @@
 ### Week 1
 
 We created classes representing graphs, vertices, and edges. In the graph class, the constructor takes in an airport data file (for the vertices) and a routes data file (for the edges). The constructor parses these two files, discards any problematic/invalid vertices and edges, and stores the valid vertices and edges in unordered maps. In addition to the vertices map and the edges map, the graph class also stores an unordered map that maps each vertex to a vector of all that vertex's neighbors (the adjacency list). The graph, vertex, and edge class implementations are in `graph.h` and `graph.cpp`. We used these classes to parse our main data files (`airports.dat` and `routes.dat`) into a graph representation. In addition, we created some basic test cases to ensure that a simple graph could be created properly. We also tested that the graph creation correctly handled invalid inputs.
+
+### Week 2
+
+We implemented a BFS traversal function within our graph class. The traversal explores all connected components by iterating over all vertices in the graph and running a BFS traversal on any unvisited vertices (via a helper function that takes a starting vertex as an argument). The function returns a vector of discovery edges and a vector of cross edges.

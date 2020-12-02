@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <queue>
 Vertex::Vertex() {}
 // TODO: overload << operator for pretty printing ???
 Vertex::Vertex(const std::string& csv) {
@@ -134,4 +135,43 @@ bool Graph::VertexExists(const std::string& key) {
 bool Graph::EdgeExists(const std::string& source, const std::string& dest) {
   std::string key = source + '-' + dest;
   return edges.count(key) > 0;
+}
+
+std::pair<std::vector<std::string>, std::vector<std::string>> Graph::BFS() {
+  // Stores the keys of all visited nodes
+  std::unordered_set<std::string> visited;
+  // Stores the keys of all discovery edges
+  std::vector<std::string> discovery;
+  // Stores the keys of all cross edges
+  std::vector<std::string> cross;
+  for (const auto& v : vertices) {
+    // Checking for connected components
+    // If vertex has already been visited, do nothing as it belongs to a connected component that has already been explored
+    if (visited.count(v.first)) continue;
+    BFS(v.first, discovery, cross, visited);
+  }
+  return std::pair<std::vector<std::string>, std::vector<std::string>>(discovery, cross);
+}
+
+void Graph::BFS(std::string start, std::vector<std::string>& discovery, std::vector<std::string>& cross, std::unordered_set<std::string>& visited) {
+  std::queue<std::string> q;
+  q.push(start);
+  visited.insert(start);
+  while (!q.empty()) {
+    std::string curr = q.front();
+    q.pop();
+    if (!adj_list.count(curr)) continue;
+    for (const auto& neighbor : adj_list.at(curr)) {
+      // key format: "[source vertex key]-[destination vertex key]""
+      std::string key = curr + "-" + neighbor;
+      if (visited.count(neighbor)) {
+        cross.push_back(key);
+        continue;
+      }
+      // neighbor has not been visited -> discovery edge
+      visited.insert(neighbor);
+      q.push(neighbor);
+      discovery.push_back(key);
+    }
+  }
 }
