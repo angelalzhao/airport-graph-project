@@ -1,8 +1,13 @@
 #pragma once
+
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
+
+#include "utils.h"
+
 class Vertex {
   public:
     Vertex();
@@ -11,12 +16,12 @@ class Vertex {
     std::string GetKey() const;
     std::string GetName() const;
     std::string GetCity() const;
-    std::pair<double, double> GetCoords() const;
+    Coord GetCoords() const;
   private:
     std::string key;
     std::string name;
     std::string city;
-    std::pair<double, double> coords;
+    Coord coords;
 };
 class Edge {
   public:

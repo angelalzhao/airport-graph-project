@@ -1,9 +1,11 @@
-#include "graph.h"
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <queue>
+
+#include "graph.h"
+
 Vertex::Vertex() {}
 // TODO: overload << operator for pretty printing ???
 Vertex::Vertex(const std::string& csv) {
