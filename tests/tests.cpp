@@ -29,3 +29,26 @@ TEST_CASE("Parsing a small graph", "[graph]") {
   REQUIRE(neighbors[0] == "DFW");
   REQUIRE(neighbors[1] == "LAX");
 }
+
+TEST_CASE("Testing BFS traversal", "[bfs]") {
+  Graph g("tests/sample_airports.dat", "tests/sample_routes.dat");
+  std::vector<std::string> c = g.BFS().second;
+  REQUIRE(c.size() == 11);
+
+  std::vector<std::string> test;
+  test.push_back("LAS-SEA");
+  test.push_back("CLT-SEA");
+  test.push_back("SFO-LAS");
+  test.push_back("ATL-CLT");
+  test.push_back("JFK-SFO");
+  test.push_back("LAX-ATL");
+  test.push_back("DEN-JFK");
+  test.push_back("ORD-LAX");
+  test.push_back("ORD-DFW");
+  test.push_back("DFW-ORD");
+  test.push_back("DFW-DEN");
+
+  for (int i = 0; i < c.size(); i++) {
+    REQUIRE(c.at(i) == test.at(i));
+  }
+}
