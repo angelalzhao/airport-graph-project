@@ -29,3 +29,9 @@ TEST_CASE("Parsing a small graph", "[graph]") {
   REQUIRE(neighbors[0] == "DFW");
   REQUIRE(neighbors[1] == "LAX");
 }
+
+TEST_CASE("Testing BFS traversal", "[bfs]") {
+  Graph g("tests/sample_airports.dat", "tests/sample_routes.dat");
+  std::vector<std::string> c = g.BFS().second;
+  REQUIRE(c.size() == 11);
+}
