@@ -48,8 +48,8 @@ class Graph {
     std::vector<std::string> GetDestinations(const std::string& source);
     bool VertexExists(const std::string& key);
     bool EdgeExists(const std::string& source, const std::string& dest);
-    std::pair<std::vector<std::string>, std::vector<std::string>> BFS();
-    void BFS(std::string start, std::vector<std::string>& discovery, std::vector<std::string>& cross, std::unordered_set<std::string>& visited);
+    std::vector<std::string> BFS();
+    void BFS(std::string start, std::vector<std::string>& v, std::unordered_set<std::string>& visited);
   private:
     std::unordered_map<std::string, Vertex> vertices;
     std::unordered_map<std::string, Edge> edges;

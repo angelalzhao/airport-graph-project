@@ -139,41 +139,36 @@ bool Graph::EdgeExists(const std::string& source, const std::string& dest) {
   return edges.count(key) > 0;
 }
 
-std::pair<std::vector<std::string>, std::vector<std::string>> Graph::BFS() {
+std::vector<std::string> Graph::BFS() {
   // Stores the keys of all visited nodes
   std::unordered_set<std::string> visited;
-  // Stores the keys of all discovery edges
-  std::vector<std::string> discovery;
-  // Stores the keys of all cross edges
-  std::vector<std::string> cross;
-  for (const auto& v : vertices) {
+  // Stores the keys of all node keys in order visited
+  std::vector<std::string> v;
+  for (const auto& vertex : vertices) {
     // Checking for connected components
     // If vertex has already been visited, do nothing as it belongs to a connected component that has already been explored
-    if (visited.count(v.first)) continue;
-    BFS(v.first, discovery, cross, visited);
+    if (visited.count(vertex.first)) continue;
+    BFS(vertex.first, v, visited);
   }
-  return std::pair<std::vector<std::string>, std::vector<std::string>>(discovery, cross);
+  return v;
 }
 
-void Graph::BFS(std::string start, std::vector<std::string>& discovery, std::vector<std::string>& cross, std::unordered_set<std::string>& visited) {
+void Graph::BFS(std::string start, std::vector<std::string>& v, std::unordered_set<std::string>& visited) {
   std::queue<std::string> q;
   q.push(start);
   visited.insert(start);
   while (!q.empty()) {
     std::string curr = q.front();
     q.pop();
+    v.push_back(curr);
     if (!adj_list.count(curr)) continue;
     for (const auto& neighbor : adj_list.at(curr)) {
       // key format: "[source vertex key]-[destination vertex key]""
       std::string key = curr + "-" + neighbor;
-      if (visited.count(neighbor)) {
-        cross.push_back(key);
-        continue;
-      }
+      if (visited.count(neighbor)) continue;
       // neighbor has not been visited -> discovery edge
       visited.insert(neighbor);
       q.push(neighbor);
-      discovery.push_back(key);
     }
   }
 }
