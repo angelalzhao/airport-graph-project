@@ -4,10 +4,21 @@
 #include <stdexcept>
 #include <queue>
 
-
-# define INF 0x3f3f3f3f 
-
 #include "graph.h"
+
+struct DistPair {
+  public:
+    std::string loc;
+    double distance;
+
+  bool operator<(const DistPair& rhs) const {
+    return distance < rhs.distance;
+  }
+
+  bool operator==( const DistPair& rhs) {
+    return loc == rhs.loc;
+  }
+};
 
 Vertex::Vertex() {}
 // TODO: overload << operator for pretty printing ???
