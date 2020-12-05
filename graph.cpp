@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <queue>
+#include <limits>
 
 #include "graph.h"
 
@@ -193,17 +194,23 @@ void Graph::BFS(std::string start, std::vector<std::string>& v, std::unordered_s
 }
 
 void Graph::Dijkstras(Vertex source) {
-  //https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
+  /*//https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
   //set to store vertices that are being preprocessed 
   std::set<std::pair<double, std::string>> setds;
 
   //map of vertices to distances??
   std::map<Vertex, double> dist; 
-  //lol this doesnt work 
-  dist.reserve(GetNumVertices());
+
+
+  
+
+  for (auto const & v : vertices) {
+    dist.insert(std::pair<Vertex, double>(v, std::numeric_limits<double>::max()));
+  }
+
    
   for (std::pair<const Vertex, double> & key_val : dist) {
-    key_val.second = INF; 
+    key_val.second = std::numeric_limits<double>::max(); 
   }
 
   //source's distance is 0 
@@ -221,12 +228,12 @@ void Graph::Dijkstras(Vertex source) {
       std::string vertex_label = i.first; 
       double weight = i.second; 
       if (dist[vertex_label] > dist[u] + weight) {
-        if (dist[vertex_label] != INF) {
+        if (dist[vertex_label] != std::numeric_limits<double>::max()) {
           setds.erase(setds.find(make_pair(dist[vertex_label], vertex_label)));
         }
         dist[vertex_label] = dist[u] + weight;
         setds.insert(make_pair(dist[vertex_label], vertex_label));
       }
     }
-  }
+  }*/
 }
