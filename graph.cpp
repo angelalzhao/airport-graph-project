@@ -12,13 +12,18 @@ struct DistPair {
     std::string loc;
     double distance;
 
-  bool operator<(const DistPair& rhs) const {
-    return distance < rhs.distance;
-  }
+    DistPair(std::string loc, double distance) {
+      this->loc = loc;
+      this->distance = distance;
+    }
 
-  bool operator==( const DistPair& rhs) {
-    return loc == rhs.loc;
-  }
+    bool operator<(const DistPair& rhs) const {
+      return distance < rhs.distance;
+    }
+
+    bool operator==( const DistPair& rhs) {
+      return loc == rhs.loc;
+    }
 };
 
 Vertex::Vertex() {}
@@ -194,6 +199,28 @@ void Graph::BFS(std::string start, std::vector<std::string>& v, std::unordered_s
 }
 
 void Graph::Dijkstras(Vertex source) {
+
+  std::set<DistPair> pq;
+  std::map<std::string, std::string> previous;
+  std::unordered_set<std::string> visited;
+
+  for (const auto & v : vertices) {
+    pq.insert(DistPair(v.first, v.second)));
+  }
+
+  while (pq.begin()->loc != source.GetKey()) {
+    const DistPair & cur = *pq.begin();
+    const std::vector<std::string> & nodes = adj_list.find(cur.loc)->second;
+    for (const std::string & node : nodes) {
+      if (visited.count(node) == 0) {
+        // if (cur dist + edgeweight to neighbor < neighbor cur distance)
+        // neighbors predecessor is the current node
+        visited.insert(node);
+      }
+    }
+  }
+
+
   /*//https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
   //set to store vertices that are being preprocessed 
   std::set<std::pair<double, std::string>> setds;
