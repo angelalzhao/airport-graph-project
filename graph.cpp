@@ -64,7 +64,7 @@ Edge::Edge(const std::string& csv) {
   source = parsed[2];
   dest = parsed[4];
   key = source + '-' + dest;
-  //std::cout << source << ", " << dest << ", " << key << std::endl;
+  // std::cout << source << ", " << dest << ", " << key << std::endl;
   weight = 0;
 }
 
@@ -113,6 +113,10 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
     edges[e.GetKey()] = e;
     adj_list[e.GetSource()].push_back(e.GetDest());
     // TODO: set edge weight to distance
+    Vertex source = vertices[e.GetSource()];
+    Vertex dest = vertices[e.GetDest()];
+    e.SetWeight(Distance(source.GetCoords(), dest.GetCoords()));
+    std::cout << "edge's distance is: " << e.GetWeight() << std::endl;
   }
   std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
 }
