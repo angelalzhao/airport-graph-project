@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "../graph.h"
+#include "../utils.h"
 // Tests not working??? No vertices and edges are getting added??? Code seems to work fine in main
 // Issue is probably with file reading???
 TEST_CASE("Checking invalid argument detection in vertex constructor", "[vertex][graph]") {
@@ -30,7 +31,7 @@ TEST_CASE("Parsing a small graph", "[graph]") {
   REQUIRE(neighbors[1] == "LAX");
 }
 
-TEST_CASE("Testing BFS traversal", "[bfs]") {
+TEST_CASE("Testing BFS traversal", "[bfs][graph]") {
   Graph g("tests/sample_airports.dat", "tests/sample_routes.dat");
   std::vector<std::string> c = g.BFS();
   REQUIRE(c.size() == 10);
@@ -50,4 +51,12 @@ TEST_CASE("Testing BFS traversal", "[bfs]") {
   for (int i = 0; i < c.size(); i++) {
     REQUIRE(c.at(i) == test.at(i));
   }
+}
+
+
+TEST_CASE("Test distance function", "[dist][utils]") {
+  Coord first(37.773972, -122.431297);
+  Coord second(40.730610, -73.935242);
+  
+  REQUIRE(Distance(first, second) == 4135.54);
 }

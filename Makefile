@@ -39,7 +39,7 @@ utils.o: main.cpp utils.cpp
 	$(CXX) $(CXXFLAGS) main.cpp utils.cpp
 
 test: output_msg catch/catchmain.cpp tests/tests.cpp
-	$(LD) catch/catchmain.cpp tests/tests.cpp graph.cpp $(LDFLAGS) -o test
+	$(LD) catch/catchmain.cpp tests/tests.cpp graph.cpp utils.cpp $(LDFLAGS) -o test
 
 clean:
 	-rm -f *.o $(EXENAME) test
