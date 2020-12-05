@@ -115,6 +115,7 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
     // TODO: set edge weight to distance
     Vertex source = vertices[e.GetSource()];
     Vertex dest = vertices[e.GetDest()];
+    //this next line is making make test go wonky and i'm not sure why
     e.SetWeight(Distance(source.GetCoords(), dest.GetCoords()));
     std::cout << "edge's distance is: " << e.GetWeight() << std::endl;
   }
