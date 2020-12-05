@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <set>
+#include <map>
 
 #include "utils.h"
 
@@ -50,6 +51,7 @@ class Graph {
     bool EdgeExists(const std::string& source, const std::string& dest);
     std::vector<std::string> BFS();
     void BFS(std::string start, std::vector<std::string>& v, std::unordered_set<std::string>& visited);
+    void Dijkstras(Vertex source);
   private:
     std::unordered_map<std::string, Vertex> vertices;
     std::unordered_map<std::string, Edge> edges;

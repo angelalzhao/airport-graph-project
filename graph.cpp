@@ -4,6 +4,9 @@
 #include <stdexcept>
 #include <queue>
 
+
+# define INF 0x3f3f3f3f 
+
 #include "graph.h"
 
 Vertex::Vertex() {}
@@ -173,6 +176,45 @@ void Graph::BFS(std::string start, std::vector<std::string>& v, std::unordered_s
       // neighbor has not been visited -> discovery edge
       visited.insert(neighbor);
       q.push(neighbor);
+    }
+  }
+}
+
+void Graph::Dijkstras(Vertex source) {
+  //https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
+  //set to store vertices that are being preprocessed 
+  std::set<std::pair<double, std::string>> setds;
+
+  //map of vertices to distances??
+  std::map<Vertex, double> dist; 
+  //lol this doesnt work 
+  dist.reserve(GetNumVertices());
+   
+  for (std::pair<const Vertex, double> & key_val : dist) {
+    key_val.second = INF; 
+  }
+
+  //source's distance is 0 
+  setds.insert(make_pair(0.0, source.GetKey()));
+  dist[source] = 0.0; 
+
+  while (!setds.empty()) {
+    std::pair<double, std::string> temp = *(setds.begin());
+    setds.erase(setds.begin());
+    //vertex label
+    std::string u = temp.second;
+    //get adjacent vertices ?
+    
+    for (i = adj_list[u].begin(); i != adj_list[u].end(); i++) {
+      std::string vertex_label = i.first; 
+      double weight = i.second; 
+      if (dist[vertex_label] > dist[u] + weight) {
+        if (dist[vertex_label] != INF) {
+          setds.erase(setds.find(make_pair(dist[vertex_label], vertex_label)));
+        }
+        dist[vertex_label] = dist[u] + weight;
+        setds.insert(make_pair(dist[vertex_label], vertex_label));
+      }
     }
   }
 }
