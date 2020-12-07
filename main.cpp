@@ -13,5 +13,6 @@ int main() {
   Coord first(37.773972, -122.431297);
   Coord second(40.730610, -73.935242);
   std::cout << Distance(first, second) << std::endl;
+  g.Dijkstras("ORD", "JFK");
 
 }

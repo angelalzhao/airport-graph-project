@@ -50,8 +50,9 @@ class Graph {
     bool VertexExists(const std::string& key);
     bool EdgeExists(const std::string& source, const std::string& dest);
     std::vector<std::string> BFS();
-    void BFS(std::string start, std::vector<std::string>& v, std::unordered_set<std::string>& visited);
-    void Dijkstras(Vertex source);
+    std::vector<std::string> BFS(const std::string& start);
+    void BFS(const std::string& start, std::vector<std::string>& v, std::unordered_set<std::string>& visited);
+    void Dijkstras(const std::string& start, const std::string& end);
   private:
     std::unordered_map<std::string, Vertex> vertices;
     std::unordered_map<std::string, Edge> edges;

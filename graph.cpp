@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <queue>
 #include <limits>
+#include <algorithm>
 
 #include "graph.h"
 
@@ -178,7 +179,14 @@ std::vector<std::string> Graph::BFS() {
   return v;
 }
 
-void Graph::BFS(std::string start, std::vector<std::string>& v, std::unordered_set<std::string>& visited) {
+std::vector<std::string> Graph::BFS(const std::string& start) {
+  std::vector<std::string> v;
+  std::unordered_set<std::string> visited;
+  BFS(start, v, visited);
+  return v;
+}
+
+void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unordered_set<std::string>& visited) {
   std::queue<std::string> q;
   q.push(start);
   visited.insert(start);
@@ -198,18 +206,25 @@ void Graph::BFS(std::string start, std::vector<std::string>& v, std::unordered_s
   }
 }
 
-void Graph::Dijkstras(Vertex source) {
-
-  std::set<DistPair> pq;
-  std::map<std::string, std::string> previous;
+void Graph::Dijkstras(const std::string& start, const std::string& end) {
+  const double INF = std::numeric_limits<double>::max();
+  std::set<std::pair<double, std::string>> pq;
+  std::unordered_map<std::string, std::string> previous;
   std::unordered_set<std::string> visited;
+  std::unordered_map<std::string, double> distance;
 
   for (const auto & v : vertices) {
-    pq.insert(DistPair(v.first, v.second)));
+    pq.insert(std::pair<double, std::string>(INF, v.first));
+    distance[v.first] = INF;
   }
 
-  while (pq.begin()->loc != source.GetKey()) {
-    const DistPair & cur = *pq.begin();
+  // Update start distance to be 0
+  distance[start] = 0;
+  pq.erase(std::pair<double, std::string>(INF, start));
+  pq.insert(std::pair<double, std::string>(0, start));
+
+  while (!pq.empty() && (*pq.begin()).second != end) {
+    /*const DistPair & cur = *pq.begin();
     const std::vector<std::string> & nodes = adj_list.find(cur.loc)->second;
     for (const std::string & node : nodes) {
       if (visited.count(node) == 0) {
@@ -217,8 +232,39 @@ void Graph::Dijkstras(Vertex source) {
         // neighbors predecessor is the current node
         visited.insert(node);
       }
+    } */
+    auto curr = *pq.begin();
+    pq.erase(curr);
+    visited.insert(curr.second);
+    if (!adj_list.count(curr.second)) continue;
+    for (const auto& neighbor : adj_list.at(curr.second)) {
+      if (visited.count(neighbor)) continue;
+      std::string edge_key = curr.second + "-" + neighbor;
+      double new_dist = curr.first + edges.at(edge_key).GetWeight();
+      if (new_dist < distance.at(neighbor)) {
+        previous[neighbor] = curr.second;
+        double prev_dist = distance.at(neighbor);
+        distance[neighbor] = new_dist;
+        pq.erase(std::pair<double, std::string>(prev_dist, neighbor));
+        pq.insert(std::pair<double, std::string>(new_dist, neighbor));
+      }
     }
+    
   }
+  if (distance.at(end) == INF) {
+    std::cout << "No path found" << std::endl;
+  }
+  std::string curr = end;
+  std::vector<std::string> path;
+  while (previous.count(curr)) {
+    curr = previous.at(curr);
+    path.push_back(curr);
+  }
+  std::reverse(path.begin(), path.end());
+  for (std::string node : path) {
+    std::cout << node << " -> ";
+  }
+  std::cout << end << std::endl;
 
 
   /*//https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
