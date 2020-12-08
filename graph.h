@@ -52,7 +52,7 @@ class Graph {
     std::vector<std::string> BFS();
     std::vector<std::string> BFS(const std::string& start);
     void BFS(const std::string& start, std::vector<std::string>& v, std::unordered_set<std::string>& visited);
-    std::string Dijkstras(const std::string& start, const std::string& end);
+    std::pair<std::string, double> Dijkstras(const std::string& start, const std::string& end);
   private:
     std::unordered_map<std::string, Vertex> vertices;
     std::unordered_map<std::string, Edge> edges;

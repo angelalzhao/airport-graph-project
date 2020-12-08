@@ -206,7 +206,7 @@ void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unor
   }
 }
 
-std::string Graph::Dijkstras(const std::string& start, const std::string& end) {
+std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const std::string& end) {
   const double INF = std::numeric_limits<double>::max();
   std::set<std::pair<double, std::string>> pq;
   std::unordered_map<std::string, std::string> previous;
@@ -251,8 +251,10 @@ std::string Graph::Dijkstras(const std::string& start, const std::string& end) {
     }
     
   }
+  std::string path_string;
   if (distance.at(end) == INF) {
     std::cout << "No path found" << std::endl;
+    path_string = "No path found";
   }
   std::string curr = end;
   std::vector<std::string> path;
@@ -262,16 +264,17 @@ std::string Graph::Dijkstras(const std::string& start, const std::string& end) {
   }
   std::reverse(path.begin(), path.end());
   
-  std::string to_return;
   for (std::string node : path) {
     std::cout << node << " -> ";
-    to_return += node;
-    to_return += " -> ";
+    path_string += node;
+    path_string += " -> ";
   }
   std::cout << end << std::endl;
-  to_return += end;
+  if (path_string != "No path found") {
+    path_string += end;
+  }
 
-  return to_return;
+  return std::make_pair(path_string, distance.at(end));
 
 
   /*//https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
