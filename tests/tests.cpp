@@ -58,5 +58,11 @@ TEST_CASE("Test distance function", "[dist][utils]") {
   Coord first(37.773972, -122.431297);
   Coord second(40.730610, -73.935242);
   
-  REQUIRE(Distance(first, second) == 4135.54);
+  REQUIRE((int) Distance(first, second) == 4135);
+}
+
+TEST_CASE("Test dijkstras function", "[dijkstras][graph]") {
+  Graph g("tests/sample_airports.dat", "tests/sample_routes.dat");
+  std::string dij = g.Dijkstras("ORD", "JFK");
+  REQUIRE(dij == "ORD -> DFW -> DEN -> JFK");
 }

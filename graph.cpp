@@ -206,7 +206,7 @@ void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unor
   }
 }
 
-void Graph::Dijkstras(const std::string& start, const std::string& end) {
+std::string Graph::Dijkstras(const std::string& start, const std::string& end) {
   const double INF = std::numeric_limits<double>::max();
   std::set<std::pair<double, std::string>> pq;
   std::unordered_map<std::string, std::string> previous;
@@ -261,10 +261,17 @@ void Graph::Dijkstras(const std::string& start, const std::string& end) {
     path.push_back(curr);
   }
   std::reverse(path.begin(), path.end());
+  
+  std::string to_return;
   for (std::string node : path) {
     std::cout << node << " -> ";
+    to_return += node;
+    to_return += " -> ";
   }
   std::cout << end << std::endl;
+  to_return += end;
+
+  return to_return;
 
 
   /*//https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
