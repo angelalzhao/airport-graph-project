@@ -131,14 +131,12 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
     if (!vertices.count(e.GetSource()) || !vertices.count(e.GetDest()) || edges.count(e.GetKey())) {
       continue;
     }
-    edges[e.GetKey()] = e;
-    adj_list[e.GetSource()].push_back(e.GetDest());
-    // TODO: set edge weight to distance
     Vertex source = vertices[e.GetSource()];
     Vertex dest = vertices[e.GetDest()];
-    //this next line is making make test go wonky and i'm not sure why
     e.SetWeight(Distance(source.GetCoords(), dest.GetCoords()));
-    std::cout << "edge's distance is: " << e.GetWeight() << std::endl;
+    edges[e.GetKey()] = e;
+    adj_list[e.GetSource()].push_back(e.GetDest());
+    std::cout << "edge's distance is: " << edges[e.GetKey()].GetWeight() << std::endl;
   }
   std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
 }
@@ -163,6 +161,11 @@ bool Graph::VertexExists(const std::string& key) {
 bool Graph::EdgeExists(const std::string& source, const std::string& dest) {
   std::string key = source + '-' + dest;
   return edges.count(key) > 0;
+}
+
+void Graph::SetEdgeWeight(const std::string& source, const std::string& dest, double weight) {
+  std::string key = source + "-" + dest;
+  if (edges.count(key)) edges[key].SetWeight(weight);
 }
 
 std::vector<std::string> Graph::BFS() {

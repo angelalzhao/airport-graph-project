@@ -95,3 +95,20 @@ TEST_CASE("Dijkstras on small unconnected graph", "[dijkstras][graph]") {
   REQUIRE(ord_jfk.first == "No path found");
   REQUIRE(ord_jfk.second == std::numeric_limits<double>::max());
 }
+
+TEST_CASE("Dijkstras chooses multiple node path over direct path", "[dijkstras][graph]") {
+  Graph g("tests/sample_airports.dat", "tests/sample_routes.dat");
+  // Setting edge weights so that direct path from ORD to LAX is actually longer than 9 edge path
+  g.SetEdgeWeight("ORD", "LAX", 10);
+  g.SetEdgeWeight("ORD", "DFW", 1);
+  g.SetEdgeWeight("DFW", "DEN", 1);
+  g.SetEdgeWeight("DEN", "JFK", 1);
+  g.SetEdgeWeight("JFK", "SFO", 1);
+  g.SetEdgeWeight("SFO", "LAS", 1);
+  g.SetEdgeWeight("LAS", "SEA", 1);
+  g.SetEdgeWeight("SEA", "CLT", 1);
+  g.SetEdgeWeight("CLT", "ATL", 1);
+  g.SetEdgeWeight("ATL", "LAX", 1);
+  std::string path = g.Dijkstras("ORD", "LAX").first;
+  REQUIRE(path == "ORD -> DFW -> DEN -> JFK -> SFO -> LAS -> SEA -> CLT -> ATL -> LAX");
+}

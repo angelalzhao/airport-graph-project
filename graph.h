@@ -49,6 +49,7 @@ class Graph {
     std::vector<std::string> GetDestinations(const std::string& source);
     bool VertexExists(const std::string& key);
     bool EdgeExists(const std::string& source, const std::string& dest);
+    void SetEdgeWeight(const std::string& source, const std::string& dest, double weight);
     std::vector<std::string> BFS();
     std::vector<std::string> BFS(const std::string& start);
     void BFS(const std::string& start, std::vector<std::string>& v, std::unordered_set<std::string>& visited);
