@@ -249,21 +249,27 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   return std::make_pair(path_string, distance.at(end));
 }
 
-std::pair<std::map<std::string, double>, std::vector<std::pair<double, std::string>>> Graph::PageRank() {
-  double epsilon = 0.0005;
+std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double, std::string>>> Graph::PageRank() {
+  double epsilon = 0.000005;
   double decay = 0.85;
   bool converged = false;
-  std::map<std::string, double> ranking;
-  std::map<std::string, double> previous;
+  std::unordered_map<std::string, double> ranking;
+  std::unordered_map<std::string, double> previous;
   for (const auto & v : vertices) {
     ranking.insert(std::make_pair(v.first, 1.0 / vertices.size()));
   }
   while (!converged) {
+    //int no_outgoing = 0;
     previous = ranking;
     for (auto & r : ranking) {
       r.second = 0;
     }
     for (const auto & r : ranking) {
+      // TODO: handle no outgoing edge case
+      /*if (!adj_list.count(r.first)) {
+        no_outgoing++;
+        continue;
+      }*/
       for (const std::string & v : adj_list[r.first]) {
         int connections = adj_list[r.first].size();
         ranking[v] += decay * previous[r.first] / (connections == 0 ? vertices.size() : connections);
@@ -271,6 +277,7 @@ std::pair<std::map<std::string, double>, std::vector<std::pair<double, std::stri
     }
     // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
     for (auto & r : ranking) {
+      //r.second += decay * (double) no_outgoing * previous[r.first] / vertices.size();
       r.second += (1.0 - decay) / vertices.size();
     }
     // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
