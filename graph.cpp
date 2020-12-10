@@ -8,25 +8,6 @@
 
 #include "graph.h"
 
-struct DistPair {
-  public:
-    std::string loc;
-    double distance;
-
-    DistPair(std::string loc, double distance) {
-      this->loc = loc;
-      this->distance = distance;
-    }
-
-    bool operator<(const DistPair& rhs) const {
-      return distance < rhs.distance;
-    }
-
-    bool operator==( const DistPair& rhs) {
-      return loc == rhs.loc;
-    }
-};
-
 Vertex::Vertex() {}
 // TODO: overload << operator for pretty printing ???
 Vertex::Vertex(const std::string& csv) {
@@ -227,15 +208,6 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   pq.insert(std::pair<double, std::string>(0, start));
 
   while (!pq.empty() && (*pq.begin()).second != end) {
-    /*const DistPair & cur = *pq.begin();
-    const std::vector<std::string> & nodes = adj_list.find(cur.loc)->second;
-    for (const std::string & node : nodes) {
-      if (visited.count(node) == 0) {
-        // if (cur dist + edgeweight to neighbor < neighbor cur distance)
-        // neighbors predecessor is the current node
-        visited.insert(node);
-      }
-    } */
     auto curr = *pq.begin();
     pq.erase(curr);
     visited.insert(curr.second);
@@ -278,48 +250,4 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   }
 
   return std::make_pair(path_string, distance.at(end));
-
-
-  /*//https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-set-in-stl/
-  //set to store vertices that are being preprocessed 
-  std::set<std::pair<double, std::string>> setds;
-
-  //map of vertices to distances??
-  std::map<Vertex, double> dist; 
-
-
-  
-
-  for (auto const & v : vertices) {
-    dist.insert(std::pair<Vertex, double>(v, std::numeric_limits<double>::max()));
-  }
-
-   
-  for (std::pair<const Vertex, double> & key_val : dist) {
-    key_val.second = std::numeric_limits<double>::max(); 
-  }
-
-  //source's distance is 0 
-  setds.insert(make_pair(0.0, source.GetKey()));
-  dist[source] = 0.0; 
-
-  while (!setds.empty()) {
-    std::pair<double, std::string> temp = *(setds.begin());
-    setds.erase(setds.begin());
-    //vertex label
-    std::string u = temp.second;
-    //get adjacent vertices ?
-    
-    for (i = adj_list[u].begin(); i != adj_list[u].end(); i++) {
-      std::string vertex_label = i.first; 
-      double weight = i.second; 
-      if (dist[vertex_label] > dist[u] + weight) {
-        if (dist[vertex_label] != std::numeric_limits<double>::max()) {
-          setds.erase(setds.find(make_pair(dist[vertex_label], vertex_label)));
-        }
-        dist[vertex_label] = dist[u] + weight;
-        setds.insert(make_pair(dist[vertex_label], vertex_label));
-      }
-    }
-  }*/
 }
