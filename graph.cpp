@@ -117,9 +117,9 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
     e.SetWeight(Distance(source.GetCoords(), dest.GetCoords()));
     edges[e.GetKey()] = e;
     adj_list[e.GetSource()].push_back(e.GetDest());
-    std::cout << "edge's distance is: " << edges[e.GetKey()].GetWeight() << std::endl;
+    // std::cout << "edge's distance is: " << edges[e.GetKey()].GetWeight() << std::endl;
   }
-  std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
+  // std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
 }
 
 unsigned Graph::GetNumVertices() const {
@@ -228,7 +228,6 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   }
   std::string path_string;
   if (distance.at(end) == INF) {
-    std::cout << "No path found" << std::endl;
     path_string = "No path found";
   }
   std::string curr = end;
@@ -240,11 +239,9 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   std::reverse(path.begin(), path.end());
   
   for (std::string node : path) {
-    std::cout << node << " -> ";
     path_string += node;
     path_string += " -> ";
   }
-  std::cout << end << std::endl;
   if (path_string != "No path found") {
     path_string += end;
   }
@@ -252,6 +249,45 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   return std::make_pair(path_string, distance.at(end));
 }
 
-std::map<std::string, double> Graph::PageRank() {
-  return std::map<std::string, double>();
+std::pair<std::map<std::string, double>, std::vector<std::pair<double, std::string>>> Graph::PageRank() {
+  double epsilon = 0.0005;
+  double decay = 0.85;
+  bool converged = false;
+  std::map<std::string, double> ranking;
+  std::map<std::string, double> previous;
+  for (const auto & v : vertices) {
+    ranking.insert(std::make_pair(v.first, 1.0 / vertices.size()));
+  }
+  while (!converged) {
+    previous = ranking;
+    for (auto & r : ranking) {
+      r.second = 0;
+    }
+    for (const auto & r : ranking) {
+      for (const std::string & v : adj_list[r.first]) {
+        int connections = adj_list[r.first].size();
+        ranking[v] += decay * previous[r.first] / (connections == 0 ? vertices.size() : connections);
+      }
+    }
+    // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
+    for (auto & r : ranking) {
+      r.second += (1.0 - decay) / vertices.size();
+    }
+    // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
+    converged = true;
+    for (const auto & r : ranking) {
+      if (abs(r.second - previous[r.first]) > epsilon) {
+        converged = false;
+        break;
+      }
+    }
+  }
+
+  std::vector<std::pair<double, std::string>> sorted;
+  for (const auto & elem : ranking) {
+    sorted.push_back(std::make_pair(elem.second, elem.first));
+  }
+  std::sort(sorted.begin(), sorted.end(), std::greater<>());
+
+  return std::make_pair(ranking, sorted);
 }
