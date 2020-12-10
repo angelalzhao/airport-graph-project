@@ -251,3 +251,7 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
 
   return std::make_pair(path_string, distance.at(end));
 }
+
+std::map<std::string, double> Graph::PageRank() {
+  return std::map<std::string, double>();
+}
