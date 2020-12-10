@@ -276,7 +276,7 @@ std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double,
     }
     // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
     for (auto & r : ranking) {
-      r.second += decay * no_outgoing * previous[r.first] / vertices.size();
+      r.second += decay * no_outgoing / vertices.size();
       r.second += (1.0 - decay) / vertices.size();
     }
     // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
