@@ -14,9 +14,22 @@ int main() {
     if (input == "help") {
       std::cout << "Commands: bfs, dijkstra, pagerank" << std::endl;
     } else if (input == "bfs") {
-      std::vector<std::string> traversal = g.BFS();
-      std::cout << traversal.size() << " airports traversed with a breadth-first search. First ten:" << std::endl;
-      for (size_t i = 0; i < 10; i++) {
+      std::cout << "(Optional) Please specify a starting airport" << std::endl;
+      std::string start;
+      std::cin >> start;
+      std::vector<std::string> traversal;
+      if (start.empty()) {
+        traversal = g.BFS();
+      } else {
+        if (!g.VertexExists(start)) {
+          std::cout << "Airport not recognized" << std::endl;
+          continue;
+        }
+        traversal = g.BFS(start);
+      }
+      size_t size = traversal.size() < 25 ? traversal.size() : 25;
+      std::cout << traversal.size() << " airports traversed with a breadth-first search. First 25:" << std::endl;
+      for (size_t i = 0; i < size; i++) {
         std::cout << traversal[i] << " – " << g.GetVertex(traversal[i]).GetName() << std::endl;
       }
     } else if (input == "dijkstra") {
