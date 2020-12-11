@@ -8,8 +8,16 @@
 
 #include "graph.h"
 
+/**
+* Default vertex constructor
+*/
 Vertex::Vertex() {}
 // TODO: overload << operator for pretty printing ???
+
+/**
+* Constructs a vertex
+* @param csv the line of a file representing a vertex
+*/
 Vertex::Vertex(const std::string& csv) {
   // https://www.tutorialspoint.com/parsing-a-comma-delimited-std-string-in-cplusplus
   std::vector<std::string> parsed;
@@ -53,8 +61,15 @@ std::pair<double, double> Vertex::GetCoords() const {
   return coords;
 }
 
+/**
+* Default Edge Constructor
+*/
 Edge::Edge() {}
 
+/**
+* Constructs an edge
+* @param csv line of a file representing an edge
+*/
 Edge::Edge(const std::string& csv) {
   std::vector<std::string> parsed;
   std::stringstream ss(csv);
@@ -89,6 +104,12 @@ double Edge::GetWeight() const {
 void Edge::SetWeight(double new_weight) {
   weight = new_weight;
 }
+
+/**
+* Constructs a graph from a file of vertices and a file of edges
+* @param vertex_file file of vertices
+* @param edge_file file of edges
+*/
 
 Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
   std::ifstream vfilestream(vertex_file);
@@ -153,6 +174,11 @@ void Graph::SetEdgeWeight(const std::string& source, const std::string& dest, do
   if (edges.count(key)) edges[key].SetWeight(weight);
 }
 
+/**
+* Creates a breadth-first traversal for the graph
+* @return a vector of keys in the order nodes were visited
+*/
+
 std::vector<std::string> Graph::BFS() {
   // Stores the keys of all visited nodes
   std::unordered_set<std::string> visited;
@@ -167,12 +193,25 @@ std::vector<std::string> Graph::BFS() {
   return v;
 }
 
+/**
+* Creates a breadth-first traversal for the graph starting at a given node
+* @param start the start point of the BFS
+* @return a vector of keys in the order nodes were visited
+*/
+
 std::vector<std::string> Graph::BFS(const std::string& start) {
   std::vector<std::string> v;
   std::unordered_set<std::string> visited;
   BFS(start, v, visited);
   return v;
 }
+
+/**
+* Helper function for the BFS traversal
+* @param start the start point of the BFS
+* @param v the vector of keys in the order nodes were visted
+* @param visted the set of keys that have already been visited
+*/
 
 void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unordered_set<std::string>& visited) {
   std::queue<std::string> q;
@@ -193,6 +232,13 @@ void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unor
     }
   }
 }
+
+/**
+* Uses Dijkstras algorithm to find the shortest path through a graph
+* @param start the starting point of the path
+* @param end the endpoint of the path
+* @return a pair of a string representing the shortest path and the distance of the shortest path
+*/
 
 std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const std::string& end) {
   const double INF = std::numeric_limits<double>::max();
@@ -252,6 +298,11 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
 
   return std::make_pair(path_string, distance.at(end));
 }
+
+/**
+* PageRank algorithm to calculate the popularity of airports in the graph, based on flight legs
+* @return a map of each airport key to its rank
+*/
 
 std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double, std::string>>> Graph::PageRank() {
   double epsilon = 0.000005;
