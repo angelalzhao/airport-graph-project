@@ -14,11 +14,11 @@ int main() {
     if (input == "help") {
       std::cout << "Commands: bfs, dijkstra, pagerank" << std::endl;
     } else if (input == "bfs") {
-      std::cout << "(Optional) Please specify a starting airport" << std::endl;
+      std::cout << "(Optional) Please specify a starting airport or type NA" << std::endl;
       std::string start;
       std::cin >> start;
       std::vector<std::string> traversal;
-      if (start.empty()) {
+      if (start == "NA") {
         traversal = g.BFS();
       } else {
         if (!g.VertexExists(start)) {
