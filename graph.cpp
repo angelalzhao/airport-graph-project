@@ -130,6 +130,10 @@ unsigned Graph::GetNumEdges() const {
   return edges.size();
 }
 
+Vertex Graph::GetVertex(const std::string& code) {
+  return vertices[code];
+}
+
 std::vector<std::string> Graph::GetDestinations(const std::string& source) {
   if (!adj_list.count(source)) return {};
   return adj_list.at(source);
