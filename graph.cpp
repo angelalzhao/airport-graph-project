@@ -12,7 +12,6 @@
 * Default vertex constructor
 */
 Vertex::Vertex() {}
-// TODO: overload << operator for pretty printing ???
 
 /**
 * Constructs a vertex
@@ -36,7 +35,7 @@ Vertex::Vertex(const std::string& csv) {
   }
   key = key.substr(1, 3);
   name = parsed[1];
-  // likely not an issue
+
   if (name.length() < 3 || parsed[2].length() < 3 || parsed[3].length() < 3) {
     throw std::invalid_argument("Invalid city or name");
   }
@@ -127,7 +126,6 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
   line.clear();
   std::ifstream efilestream(edge_file);
   while (std::getline(efilestream, line)) {
-    // maybe TODO? check for null/abnormal edge keys, doesn't seem to be an issue from looking at dataset
     Edge e(line);
     // checking if either endpoints aren't in list of vertices, or that an edge with the same source/destination already exists
     if (!vertices.count(e.GetSource()) || !vertices.count(e.GetDest()) || edges.count(e.GetKey())) {
@@ -178,7 +176,6 @@ void Graph::SetEdgeWeight(const std::string& source, const std::string& dest, do
 * Creates a breadth-first traversal for the graph
 * @return a vector of keys in the order nodes were visited
 */
-
 std::vector<std::string> Graph::BFS() {
   // Stores the keys of all visited nodes
   std::unordered_set<std::string> visited;
@@ -198,7 +195,6 @@ std::vector<std::string> Graph::BFS() {
 * @param start the start point of the BFS
 * @return a vector of keys in the order nodes were visited
 */
-
 std::vector<std::string> Graph::BFS(const std::string& start) {
   std::vector<std::string> v;
   std::unordered_set<std::string> visited;
@@ -212,7 +208,6 @@ std::vector<std::string> Graph::BFS(const std::string& start) {
 * @param v the vector of keys in the order nodes were visted
 * @param visted the set of keys that have already been visited
 */
-
 void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unordered_set<std::string>& visited) {
   std::queue<std::string> q;
   q.push(start);
@@ -239,7 +234,6 @@ void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unor
 * @param end the endpoint of the path
 * @return a pair of a string representing the shortest path and the distance of the shortest path
 */
-
 std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const std::string& end) {
   const double INF = std::numeric_limits<double>::max();
   std::set<std::pair<double, std::string>> pq;
@@ -303,7 +297,6 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
 * PageRank algorithm to calculate the popularity of airports in the graph, based on flight legs
 * @return a map of each airport key to its rank
 */
-
 std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double, std::string>>> Graph::PageRank() {
   double epsilon = 0.000005;
   double decay = 0.85;

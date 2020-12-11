@@ -2,12 +2,13 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
+#include <limits>
 
 #include "../graph.h"
 #include "../utils.h"
-// Tests not working??? No vertices and edges are getting added??? Code seems to work fine in main
-// Issue is probably with file reading???
+
 TEST_CASE("Checking invalid argument detection in vertex constructor", "[vertex][graph]") {
   Graph g("tests/invalid-airports.dat", "tests/sample_routes.dat");
   // Check that no vertices or edges are added to the graph when provided with invalid inputs
@@ -111,4 +112,29 @@ TEST_CASE("Dijkstras chooses multiple node path over direct path", "[dijkstras][
   g.SetEdgeWeight("ATL", "LAX", 1);
   std::string path = g.Dijkstras("ORD", "LAX").first;
   REQUIRE(path == "ORD -> DFW -> DEN -> JFK -> SFO -> LAS -> SEA -> CLT -> ATL -> LAX");
+}
+
+TEST_CASE("Page rank on sample data", "[pagerank][graph]") {
+  Graph g("tests/sample_airports.dat", "tests/sample_routes.dat");
+  const auto & rank = g.PageRank();
+  //In a circular connected graph, each with one outgoing edge, the ranks are the same
+  for (size_t i = 0; i < 10; i++) {
+    REQUIRE(rank.second[i].first == 0.1);
+  }
+}
+
+TEST_CASE("Page rank on small unconnected graph", "[pagerank][graph]") {
+  Graph g("tests/airports_small.dat", "tests/routes_small.dat");
+  const auto & rank = g.PageRank();
+  //ensure that page rank still assigns a rank to vertices with no outgoing edges
+  std::vector<double> test;
+  test.push_back(0.41372);
+  test.push_back(0.1722572757);
+  test.push_back(0.1722572757);
+  test.push_back(0.1208825114);
+  test.push_back(0.1208825114);
+
+  for (size_t i = 0; i < 5; i++) {
+   REQUIRE(Approx(rank.second[i].first) == test[i]);
+  }
 }
