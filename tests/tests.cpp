@@ -135,13 +135,14 @@ TEST_CASE("Page rank on sample data", "[pagerank][graph]") {
 TEST_CASE("Page rank on small unconnected graph", "[pagerank][graph]") {
   Graph g("tests/airports_small.dat", "tests/routes_small.dat");
   const auto & rank = g.PageRank();
-  //ensure that page rank still assigns a rank to vertices with no outgoing edges
+  //ensure that page rank still assigns a nonzero rank to vertices with no outgoing edges
+  // values from running standard power iteration (matrix multiplication) method on same graph in python (see pageranktest.py)
   std::vector<double> test;
-  test.push_back(0.41372);
-  test.push_back(0.1722572757);
-  test.push_back(0.1722572757);
-  test.push_back(0.1208825114);
-  test.push_back(0.1208825114);
+  test.push_back(0.41372043);
+  test.push_back(0.17225728);
+  test.push_back(0.17225728);
+  test.push_back(0.12088251);
+  test.push_back(0.12088251);
 
   for (size_t i = 0; i < 5; i++) {
    REQUIRE(Approx(rank.second[i].first) == test[i]);
