@@ -30,18 +30,20 @@ Vertex::Vertex(const std::string& csv) {
   coords.first = std::stod(parsed[6]);
   coords.second = std::stod(parsed[7]);
   key = parsed[4];
+  // Key should be 5 characters (three character airport code and quotation marks)
   if (key.length() != 5) {
     throw std::invalid_argument("Invalid key");
   }
+  // Remove quotation marks
   key = key.substr(1, 3);
   name = parsed[1];
-
+  // Name, city, country must all be at lease 3 characters with quotation marks
   if (name.length() < 3 || parsed[2].length() < 3 || parsed[3].length() < 3) {
     throw std::invalid_argument("Invalid city or name");
   }
+  // Removing quotation marks and formating location as City, Country
   name = name.substr(1, name.length() - 2);
   city = parsed[2].substr(1, parsed[2].length() - 2) + ", " + parsed[3].substr(1, parsed[3].length() - 2);
-  // std::cout << key << ", " << name << ", " << city << ", " << coords.first << ", " << coords.second << std::endl;
 }
 
 std::string Vertex::GetKey() const {
@@ -77,10 +79,11 @@ Edge::Edge(const std::string& csv) {
     std::getline(ss, substring, ',');
     parsed.push_back(substring);
   }
+  // IATA code of source airport
   source = parsed[2];
+  // IATA code of destination airport
   dest = parsed[4];
   key = source + '-' + dest;
-  // std::cout << source << ", " << dest << ", " << key << std::endl;
   weight = 0;
 }
 
@@ -133,12 +136,11 @@ Graph::Graph(const std::string& vertex_file, const std::string& edge_file) {
     }
     Vertex source = vertices[e.GetSource()];
     Vertex dest = vertices[e.GetDest()];
+    // Set edge weight to distance between source and destination (according to latitude/longitude)
     e.SetWeight(Distance(source.GetCoords(), dest.GetCoords()));
     edges[e.GetKey()] = e;
     adj_list[e.GetSource()].push_back(e.GetDest());
-    // std::cout << "edge's distance is: " << edges[e.GetKey()].GetWeight() << std::endl;
   }
-  // std::cout << vertices.size() << ", " << edges.size() << ", " << adj_list.size() << std::endl;
 }
 
 unsigned Graph::GetNumVertices() const {
@@ -217,11 +219,11 @@ void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unor
     q.pop();
     v.push_back(curr);
     if (!adj_list.count(curr)) continue;
+    // Visit all unvisited neighbors of curr and push to queue
     for (const auto& neighbor : adj_list.at(curr)) {
       // key format: "[source vertex key]-[destination vertex key]""
       std::string key = curr + "-" + neighbor;
       if (visited.count(neighbor)) continue;
-      // neighbor has not been visited -> discovery edge
       visited.insert(neighbor);
       q.push(neighbor);
     }
@@ -235,8 +237,11 @@ void Graph::BFS(const std::string& start, std::vector<std::string>& v, std::unor
 * @return a pair of a string representing the shortest path and the distance of the shortest path
 */
 std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const std::string& end) {
+  // reference: https://courses.grainger.illinois.edu/cs225/fa2020/resources/dijkstra/
   const double INF = std::numeric_limits<double>::max();
+  // Using (ordered) set to represent priority queue
   std::set<std::pair<double, std::string>> pq;
+  // Maps node to its predecessor
   std::unordered_map<std::string, std::string> previous;
   std::unordered_set<std::string> visited;
   std::unordered_map<std::string, double> distance;
@@ -248,6 +253,7 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
 
   // Update start distance to be 0
   distance[start] = 0;
+  // To update, we remove old entry in priority queue and add the entry with the updated distance
   pq.erase(std::pair<double, std::string>(INF, start));
   pq.insert(std::pair<double, std::string>(0, start));
 
@@ -274,6 +280,7 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
   if (distance.at(end) == INF) {
     path_string = "No path found";
   }
+  // Reconstructing the path from previous
   std::string curr = end;
   std::vector<std::string> path;
   while (previous.count(curr)) {
@@ -295,9 +302,10 @@ std::pair<std::string, double> Graph::Dijkstras(const std::string& start, const 
 
 /**
 * PageRank algorithm to calculate the popularity of airports in the graph, based on flight legs
-* @return a map of each airport key to its rank
+* @return a map of each airport key to its rank and sorted list of pagerank score/airport code pairs from highest score to lowest
 */
 std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double, std::string>>> Graph::PageRank() {
+  // reference: https://courses.cs.washington.edu/courses/cse373/17au/project3/project3-3.html
   double epsilon = 0.000005;
   double decay = 0.85;
   bool converged = false;
@@ -313,6 +321,7 @@ std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double,
       r.second = 0;
     }
     for (const auto & r : ranking) {
+      // Keeping track of cumulative old page rank from nodes with nodes with no outgoing edges
       if (!adj_list.count(r.first)) {
         no_outgoing += previous[r.first];
         continue;
@@ -322,12 +331,11 @@ std::pair<std::unordered_map<std::string, double>, std::vector<std::pair<double,
         ranking[v] += decay * previous[r.first] / connections;
       }
     }
-    // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
     for (auto & r : ranking) {
+      // Adding d * cumulative old rank from nodes without outgoing edges / N to all vertices 
       r.second += decay * no_outgoing / vertices.size();
       r.second += (1.0 - decay) / vertices.size();
     }
-    // for (const auto & elem : ranking) std::cout << elem.first << " - " << elem.second << " " << std::endl;
     converged = true;
     for (const auto & r : ranking) {
       if (abs(r.second - previous[r.first]) > epsilon) {

@@ -9,6 +9,15 @@
 #include "../graph.h"
 #include "../utils.h"
 
+/* Test data:
+invalid-airports.dat - contains several airport data entries that would not be considered valid by our code
+sample_airports.dat and sample_routes.dat represent a small graph connecting 10 airports in a 10-cycle with edges
+going both directions (10 vertices, 20 edges)
+airports_small.dat and routes_small.dat represent a graph with two connected components:
+One connected component consists of the single node JFK. The other component consists of ORD, ATL, CLT, LAX, 
+with edges from ORD->CLT, CLT->ATL, ORD->LAX, LAX->ATL
+*/
+
 TEST_CASE("Checking invalid argument detection in vertex constructor", "[vertex][graph]") {
   Graph g("tests/invalid-airports.dat", "tests/sample_routes.dat");
   // Check that no vertices or edges are added to the graph when provided with invalid inputs
